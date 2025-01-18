@@ -67,39 +67,37 @@ func clear_piece()->void:
 		bonus_tiles.append_array(temp_bonus_tiles)
 	#-1 means no tiles exist, now we all the tile coords that going to be cleared
 
-	#we add sprites to add some animation secretly deleting the actual tile 
+	#we add sprites to add some animation secretly deleting the actual tile
+
+	var clear_animation : Callable = func(pos: Vector2i, color_val: Color, time: float):
+		var new_sprite := Sprite2D.new()
+		new_sprite.texture = load("res://tile.jpg")
+		new_sprite.position = tilemap.map_to_local(pos)
+		new_sprite.self_modulate = color_val
+		add_child(new_sprite)
+		var tween = create_tween()
+		print("diz")
+		tween.tween_property(new_sprite, "scale", Vector2.ONE * 0.8, time/3)
+		tween.tween_property(new_sprite, "scale", Vector2.ONE, time/3)
+		tween.tween_property(new_sprite, "scale", Vector2.ZERO, time/3)
+		await tween.finished
+		new_sprite.queue_free()
+
+
 	for tile_pos : Vector2i in tiles_to_clear:
 		if bonus_tiles.has(tile_pos): continue
 		#await get_tree().create_timer(0.1).timeout
-		var new_sprite := Sprite2D.new()
-		new_sprite.texture = load("res://tile.jpg")
-		new_sprite.position = tilemap.map_to_local(tile_pos)
-		new_sprite.self_modulate = PUFF_COLORS[tilemap.get_cell_alternative_tile(tile_pos)] 
-		add_child(new_sprite)
+		var color_val : Color = PUFF_COLORS[tilemap.get_cell_alternative_tile(tile_pos)]
 		tilemap.set_cell(tile_pos)
-		var tween = create_tween()
-		tween.tween_property(new_sprite, "scale", Vector2.ONE * 0.8, 0.1)
-		tween.tween_property(new_sprite, "scale", Vector2.ONE, 0.1)
-		tween.tween_property(new_sprite, "scale", Vector2.ZERO, 0.1)
-		await tween.finished
-		new_sprite.queue_free()
+		await clear_animation.call(tile_pos, color_val, 0.2)
 
 	#same as above but we wanted to clear the overlapping tiles separately
 	await get_tree().create_timer(0.08).timeout
 	for tile_pos : Vector2i in bonus_tiles:
 		#await get_tree().create_timer(0.05).timeout
-		var new_sprite := Sprite2D.new()
-		new_sprite.texture = load("res://tile.jpg")
-		new_sprite.position = tilemap.map_to_local(tile_pos)
-		new_sprite.self_modulate = PUFF_COLORS[tilemap.get_cell_alternative_tile(tile_pos)] 
-		add_child(new_sprite)
+		var color_val : Color = tilemap.get_cell_alternative_tile(tile_pos)	
 		tilemap.set_cell(tile_pos)
-		var tween = create_tween()
-		tween.tween_property(new_sprite, "scale", Vector2.ONE * 0.8, 0.05)
-		tween.tween_property(new_sprite, "scale", Vector2.ONE, 0.04)
-		tween.tween_property(new_sprite, "scale", Vector2.ZERO, 0.02)
-		await tween.finished
-		new_sprite.queue_free()
+		await clear_animation.call(tile_pos, color_val, 0.05)
 	print(add_bonus)
 
 #checks if the given corrds in between the playground we decided
