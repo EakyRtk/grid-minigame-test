@@ -43,27 +43,42 @@ func add_pattern_at_pos(pos: Vector2i = Vector2i.ZERO, color: COLORS = COLORS.WH
 #we want to store the rows and columns that are going to be cleared but we must be careful to not include rows and/or columns that arent fill the raw/column
 #also shared tiles with the column and row clearing has to give extra points
 func clear_piece()->void:
-	#--check row
 	var tiles_to_clear : Array[Vector2i]
 	var bonus_tiles : Array[Vector2i]
-	for column : int in range(GRID_TOP_LIMIT.y, GRID_BOTTOM_LIMIT.y + 1):
-		var temp_tiles_to_clear : Array[Vector2i]
-		for row : int in range(GRID_TOP_LIMIT.x, GRID_BOTTOM_LIMIT.x + 1):
-			if tilemap.get_cell_source_id(Vector2i(row, column)) == -1: temp_tiles_to_clear.clear(); break
-			temp_tiles_to_clear.append(Vector2i(row, column))
-		tiles_to_clear.append_array(temp_tiles_to_clear)
+
+	#UPDATE: In this model, tiles_to_clear only holds values to check bonus tiles
+	#for the tile clearings, rows and columns hold the complete row and/or columns indexes (cuz y and/or x coords stay the same)
+	var rows : Array[int]
+	var columns : Array[int]
+	#--check row
+	for column_pos : int in range(GRID_TOP_LIMIT.y, GRID_BOTTOM_LIMIT.y + 1):
+		var add_row_pos : int = -1
+		var temp_tiles : Array[Vector2i]
+		for row_pos : int in range(GRID_TOP_LIMIT.x, GRID_BOTTOM_LIMIT.x + 1):
+			if tilemap.get_cell_source_id(Vector2i(row_pos, column_pos)) == -1: add_row_pos = -1; temp_tiles.clear(); break
+			add_row_pos = column_pos
+			temp_tiles.append(Vector2i(row_pos, column_pos))
+		tiles_to_clear.append_array(temp_tiles)
+		if add_row_pos != -1: rows.append(add_row_pos)
+
 	#--check column
 	var add_bonus : int = 0
-	for row : int in range(GRID_TOP_LIMIT.x, GRID_BOTTOM_LIMIT.x + 1):
-		var temp_tiles_to_clear : Array[Vector2i]
+	for row_pos : int in range(GRID_TOP_LIMIT.x, GRID_BOTTOM_LIMIT.x + 1):
 		var temp_add_bonus : int = 0
 		var temp_bonus_tiles : Array[Vector2i]
-		for column : int in range(GRID_TOP_LIMIT.y, GRID_BOTTOM_LIMIT.y + 1):
-			if tilemap.get_cell_source_id(Vector2i(row, column)) == -1: temp_tiles_to_clear.clear(); temp_bonus_tiles.clear(); break
-			if tiles_to_clear.has(Vector2i(row, column)): temp_add_bonus += 1; temp_bonus_tiles.append(Vector2i(row,column))
-			temp_tiles_to_clear.append(Vector2i(row, column))
+		var add_column_pos : int = -1 
+		var temp_tiles : Array[Vector2i]
+		for column_pos : int in range(GRID_TOP_LIMIT.y, GRID_BOTTOM_LIMIT.y + 1):
+			if tilemap.get_cell_source_id(Vector2i(row_pos, column_pos)) == -1: add_column_pos = -1; temp_tiles.clear(); temp_bonus_tiles.clear(); break
+			if tiles_to_clear.has(Vector2i(row_pos, column_pos)):
+				temp_add_bonus += 1
+				temp_bonus_tiles.append(Vector2i(row_pos, column_pos))
+				add_column_pos = row_pos 
+			add_column_pos = row_pos
+			temp_tiles.append(Vector2i(row_pos, column_pos))
 		add_bonus += temp_add_bonus
-		tiles_to_clear.append_array(temp_tiles_to_clear)
+		tiles_to_clear.append_array(temp_tiles)
+		if add_column_pos != -1: columns.append(add_column_pos)
 		bonus_tiles.append_array(temp_bonus_tiles)
 	#-1 means no tiles exist, now we all the tile coords that going to be cleared
 
@@ -76,28 +91,38 @@ func clear_piece()->void:
 		new_sprite.self_modulate = color_val
 		add_child(new_sprite)
 		var tween = create_tween()
-		print("diz")
 		tween.tween_property(new_sprite, "scale", Vector2.ONE * 0.8, time/3)
 		tween.tween_property(new_sprite, "scale", Vector2.ONE, time/3)
 		tween.tween_property(new_sprite, "scale", Vector2.ZERO, time/3)
 		await tween.finished
 		new_sprite.queue_free()
 
+	var anim_time : float = 0.2 
 
-	for tile_pos : Vector2i in tiles_to_clear:
-		if bonus_tiles.has(tile_pos): continue
-		#await get_tree().create_timer(0.1).timeout
+	var clear_row_and_columns : Callable = func(start_limit: int, finish_limit: int, clear_arr: Array[int], is_row : bool = true):
+		for anchor_pos : int in range(start_limit, finish_limit):
+			if clear_arr == []: break
+			var will_await : bool = true
+			for walk_pos : int in clear_arr:
+				var pos : Vector2i
+				if is_row: pos = Vector2i(anchor_pos, walk_pos)
+				else: pos = Vector2i(walk_pos, anchor_pos) 
+				if bonus_tiles.has(pos): will_await = false; continue
+				will_await = true
+				var color_val : Color = PUFF_COLORS[tilemap.get_cell_alternative_tile(pos)]
+				tilemap.set_cell(pos)
+				clear_animation.call(pos, color_val, anim_time)
+			if will_await: await get_tree().create_timer(anim_time).timeout
+
+	clear_row_and_columns.call(GRID_TOP_LIMIT.x, GRID_BOTTOM_LIMIT.x + 1, rows)
+	clear_row_and_columns.call(GRID_TOP_LIMIT.y, GRID_BOTTOM_LIMIT.y + 1, columns, false)
+	#same as above but we wanted to clear the overlapping tiles separately
+	await get_tree().create_timer(anim_time * 3).timeout
+	for tile_pos : Vector2i in bonus_tiles:
 		var color_val : Color = PUFF_COLORS[tilemap.get_cell_alternative_tile(tile_pos)]
 		tilemap.set_cell(tile_pos)
-		await clear_animation.call(tile_pos, color_val, 0.2)
-
-	#same as above but we wanted to clear the overlapping tiles separately
-	await get_tree().create_timer(0.08).timeout
-	for tile_pos : Vector2i in bonus_tiles:
-		#await get_tree().create_timer(0.05).timeout
-		var color_val : Color = tilemap.get_cell_alternative_tile(tile_pos)	
-		tilemap.set_cell(tile_pos)
 		await clear_animation.call(tile_pos, color_val, 0.05)
+
 	print(add_bonus)
 
 #checks if the given corrds in between the playground we decided
@@ -128,4 +153,3 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("left_click"):
 		set_pattern_on_mouse_pos()
 		#set_tile_on_mouse_pos()
-
