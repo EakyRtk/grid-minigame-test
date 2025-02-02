@@ -10,22 +10,6 @@ class PatternTexture:
 		v_flip = pv_flip
 		textur = ptextur
 
-enum COLORS {WHITE, CYAN, RED, GREEN}
-enum PATTERNS {SQUARE,
-PAR_TOP_LEFT, PAR_TOP_RIGHT, PAR_BOTTOM_LEFT, PAR_BOTTOM_RIGHT,
-WALK_UPLEFT, WALK_UPRIGHT, WALK_DOWNLEFT, WALK_DOWNRIGHT,
-SIT_LEFT, SIT_RIGHT, REVERSE_SIT_LEFT, REVERSE_SIT_RIGHT,
-UPLINE, HORIZONTAL_LINE,
-T_UP, T_LEFT, T_RIGHT, T_DOWN,
-BULKY_DOWN, BULKY_UP, BULKY_RIGHT, BULKY_LEFT,
-LONG_LINE_UP, LONG_LINE_HORIZONTAL,
-CLOSE_UPLEFT, CLOSE_UPRIGHT, CLOSE_BOTLEFT, CLOSE_BOTRIGHT,
-U_UP, U_LEFT, U_RIGHT, U_DOWN,
-STICK_UP, STICK_RIGHT, STICK_LEFT, STICK_DOWN,
-BOW_BOTRIGHT, BOW_BOTLEFT, BOW_UPRIGHT, BOW_UPLEFT,
-PLUS
-
-}
 #playground limits as tilemap coords.
 #top limit is the left top tile position
 #bottom limit is the right bottom tile position
@@ -40,39 +24,60 @@ const PUFF_COLORS : Dictionary = {
 	COLORS.GREEN: Color.GREEN
 }
 
+#------------------------------------------------------
+#7 layers of the Hell of Definitions !!!
+enum COLORS {WHITE, CYAN, RED, GREEN}
+
+enum PATTERNS {
+	SQUARE,
+	PAR_TOP_LEFT, PAR_TOP_RIGHT, PAR_BOTTOM_LEFT, PAR_BOTTOM_RIGHT,
+	WALK_UPLEFT, WALK_UPRIGHT, WALK_DOWNLEFT, WALK_DOWNRIGHT,
+	SIT_LEFT, SIT_RIGHT, REVERSE_SIT_LEFT, REVERSE_SIT_RIGHT,
+	UPLINE, HORIZONTAL_LINE,
+	T_UP, T_LEFT, T_RIGHT, T_DOWN,
+	BULKY_DOWN, BULKY_UP, BULKY_RIGHT, BULKY_LEFT,
+	LONG_LINE_UP, LONG_LINE_HORIZONTAL,
+	CLOSE_UPLEFT, CLOSE_UPRIGHT, CLOSE_BOTLEFT, CLOSE_BOTRIGHT,
+	U_UP, U_LEFT, U_RIGHT, U_DOWN,
+	STICK_UP, STICK_RIGHT, STICK_LEFT, STICK_DOWN,
+	BOW_BOTRIGHT, BOW_BOTLEFT, BOW_UPRIGHT, BOW_UPLEFT,
+	PLUS
+
+}
+
 var images : Dictionary = {
-PATTERNS.SQUARE: preload("res://pattern-images/square.png"),
+	PATTERNS.SQUARE: preload("res://pattern-images/square.png"),
 
-PATTERNS.PAR_TOP_LEFT: preload("res://pattern-images/par_top_left.png"),
+	PATTERNS.PAR_TOP_LEFT: preload("res://pattern-images/par_top_left.png"),
 
-PATTERNS.WALK_UPLEFT: preload("res://pattern-images/walk_upleft.png"),
-PATTERNS.WALK_DOWNLEFT: preload("res://pattern-images/walk_botleft.png"),
+	PATTERNS.WALK_UPLEFT: preload("res://pattern-images/walk_upleft.png"),
+	PATTERNS.WALK_DOWNLEFT: preload("res://pattern-images/walk_botleft.png"),
 
-PATTERNS.SIT_LEFT: preload("res://pattern-images/sit_left.png"),
+	PATTERNS.SIT_LEFT: preload("res://pattern-images/sit_left.png"),
 
-PATTERNS.UPLINE: preload("res://pattern-images/upline.png"),
-PATTERNS.HORIZONTAL_LINE: preload("res://pattern-images/horizontal_line.png"),
+	PATTERNS.UPLINE: preload("res://pattern-images/upline.png"),
+	PATTERNS.HORIZONTAL_LINE: preload("res://pattern-images/horizontal_line.png"),
 
-PATTERNS.T_UP: preload("res://pattern-images/t_up.png"),
-PATTERNS.T_RIGHT: preload("res://pattern-images/t_right.png"),
+	PATTERNS.T_UP: preload("res://pattern-images/t_up.png"),
+	PATTERNS.T_RIGHT: preload("res://pattern-images/t_right.png"),
 
-PATTERNS.BULKY_DOWN: preload("res://pattern-images/bulky_down.png"),
-PATTERNS.BULKY_RIGHT: preload("res://pattern-images/bulky_right.png"),
+	PATTERNS.BULKY_DOWN: preload("res://pattern-images/bulky_down.png"),
+	PATTERNS.BULKY_RIGHT: preload("res://pattern-images/bulky_right.png"),
 
-PATTERNS.LONG_LINE_UP: preload("res://pattern-images/long_line_up.png"),
-PATTERNS.LONG_LINE_HORIZONTAL: preload("res://pattern-images/long_line_horizontal.png"),
+	PATTERNS.LONG_LINE_UP: preload("res://pattern-images/long_line_up.png"),
+	PATTERNS.LONG_LINE_HORIZONTAL: preload("res://pattern-images/long_line_horizontal.png"),
 
-PATTERNS.CLOSE_UPLEFT: preload("res://pattern-images/close_upleft.png"),
+	PATTERNS.CLOSE_UPLEFT: preload("res://pattern-images/close_upleft.png"),
 
-PATTERNS.U_UP: preload("res://pattern-images/u_up.png"),
-PATTERNS.U_RIGHT: preload("res://pattern-images/u_right.png"),
+	PATTERNS.U_UP: preload("res://pattern-images/u_up.png"),
+	PATTERNS.U_RIGHT: preload("res://pattern-images/u_right.png"),
 
-PATTERNS.STICK_UP: preload("res://pattern-images/stick_up.png"),
-PATTERNS.STICK_RIGHT: preload("res://pattern-images/stick_right.png"),
+	PATTERNS.STICK_UP: preload("res://pattern-images/stick_up.png"),
+	PATTERNS.STICK_RIGHT: preload("res://pattern-images/stick_right.png"),
 
-PATTERNS.BOW_BOTRIGHT: preload("res://pattern-images/bow_botright.png"),
+	PATTERNS.BOW_BOTRIGHT: preload("res://pattern-images/bow_botright.png"),
 
-PATTERNS.PLUS: preload("res://pattern-images/plus.png")
+	PATTERNS.PLUS: preload("res://pattern-images/plus.png")
 
 
 }
@@ -98,9 +103,9 @@ var pattern_images : Dictionary = {
 	PATTERNS.HORIZONTAL_LINE: PatternTexture.new(images[PATTERNS.HORIZONTAL_LINE]),
 	
 	PATTERNS.T_UP: PatternTexture.new(images[PATTERNS.T_UP]),
-	PATTERNS.T_LEFT: PatternTexture.new(images[PATTERNS.T_UP], false, true), 
-	PATTERNS.T_RIGHT: PatternTexture.new(images[PATTERNS.T_RIGHT]), 
-	PATTERNS.T_DOWN: PatternTexture.new(images[PATTERNS.T_RIGHT], true),
+	PATTERNS.T_LEFT: PatternTexture.new(images[PATTERNS.T_RIGHT]), 
+	PATTERNS.T_RIGHT: PatternTexture.new(images[PATTERNS.T_RIGHT], true), 
+	PATTERNS.T_DOWN: PatternTexture.new(images[PATTERNS.T_UP], false, true),
 	
 	PATTERNS.BULKY_DOWN: PatternTexture.new(images[PATTERNS.BULKY_DOWN]), 
 	PATTERNS.BULKY_UP: PatternTexture.new(images[PATTERNS.BULKY_DOWN], true, true), 
@@ -116,8 +121,8 @@ var pattern_images : Dictionary = {
 	PATTERNS.CLOSE_BOTRIGHT: PatternTexture.new(images[PATTERNS.CLOSE_UPLEFT], true, true),
 	
 	PATTERNS.U_UP: PatternTexture.new(images[PATTERNS.U_UP]), 
-	PATTERNS.U_LEFT: PatternTexture.new(images[PATTERNS.U_RIGHT]), 
-	PATTERNS.U_RIGHT: PatternTexture.new(images[PATTERNS.U_RIGHT], true), 
+	PATTERNS.U_LEFT: PatternTexture.new(images[PATTERNS.U_RIGHT], true), 
+	PATTERNS.U_RIGHT: PatternTexture.new(images[PATTERNS.U_RIGHT]), 
 	PATTERNS.U_DOWN: PatternTexture.new(images[PATTERNS.U_UP], false, true),
 	
 	PATTERNS.STICK_UP: PatternTexture.new(images[PATTERNS.STICK_UP]), 
@@ -133,6 +138,8 @@ var pattern_images : Dictionary = {
 	PATTERNS.PLUS: PatternTexture.new(images[PATTERNS.PLUS]) 
 	
 }
+#-------------------------------------------------------
+
 
 ##What pattern is currently selected
 var holding_pattern 
@@ -147,6 +154,27 @@ var currently_clearing : bool = false
 @onready var pattern_visual : TileMapLayer = %TileMapVisual
 var previous_mouse_pos : Vector2i
 #----
+
+#-----------------*--------------------*-----------------------*
+#   SCORING              STUFF               O YEAH
+
+@onready var score_box : VBoxContainer = %ScoresBox
+@onready var score_label : Label = %TotalScoreLabel
+
+var total_score : int = 0
+
+@export_category("Scores")
+##Score you'll get from each tile of the pattern
+@export var score_block_place : int = 10
+##Score that you'll get from a row or a column clear
+@export var score_line_clear : int = 100
+##Score for getting a row and column clear at the same time
+@export var score_row_and_column : int = 200
+##Score multiplier for clearing multiple rows OR columns at the same time
+@export var score_m_row_or_column : int = 300
+##Score multiplier for clearing multiple rows AND columns at the same time
+@export var score_m_row_and_column : int = 600
+#-----------------*--------------------*-----------------------*
 
 #NOTE: Repo has some little explanations on the pattern and coloring matter
 
@@ -172,6 +200,7 @@ func add_pattern_at_pos(pos: Vector2i = Vector2i.ZERO, color: COLORS = COLORS.WH
 	target_tilelayer.set_pattern(pos, new_pattern)
 	holding_sprite.hide()
 	if target_tilelayer == pattern_visual: return
+	add_score("+%s", new_pattern.get_used_cells().size() * score_block_place)
 	current_holding_button.queue_free()
 	current_holding_button = null
 	holding_sprite.texture = null
@@ -238,7 +267,8 @@ func clear_piece()->void:
 
 	var anim_time : float = 0.2 
 
-	var clear_row_and_columns : Callable = func(start_limit: int, finish_limit: int, clear_arr: Array[int], is_row : bool = true):
+	var clear_row_and_columns : Callable = func(start_limit: int, finish_limit: int, clear_arr: Array[int], is_row : bool = true)->int:
+		var clear_amount : int = 0
 		for anchor_pos : int in range(start_limit, finish_limit):
 			if clear_arr == []: break
 			var will_await : bool = true
@@ -246,15 +276,21 @@ func clear_piece()->void:
 				var pos : Vector2i
 				if is_row: pos = Vector2i(anchor_pos, walk_pos)
 				else: pos = Vector2i(walk_pos, anchor_pos) 
-				if bonus_tiles.has(pos): will_await = false; continue
+				if bonus_tiles.has(pos): will_await = false; clear_amount += 1; continue
 				will_await = true
 				var color_val : Color = PUFF_COLORS[tilemap.get_cell_alternative_tile(pos)]
 				tilemap.set_cell(pos)
 				clear_animation.call(pos, color_val, anim_time)
+				clear_amount += 1
 			if will_await: await get_tree().create_timer(anim_time).timeout
+		return clear_amount
 
-	clear_row_and_columns.call(GRID_TOP_LIMIT.x, GRID_BOTTOM_LIMIT.x + 1, rows)
-	clear_row_and_columns.call(GRID_TOP_LIMIT.y, GRID_BOTTOM_LIMIT.y + 1, columns, false)
+	var score_row_amount : int = 0
+	var score_column_amount : int = 0
+	score_row_amount +=	await clear_row_and_columns.call(GRID_TOP_LIMIT.x, GRID_BOTTOM_LIMIT.x + 1, rows)
+	score_column_amount += await clear_row_and_columns.call(GRID_TOP_LIMIT.y, GRID_BOTTOM_LIMIT.y + 1, columns, false)
+	print("row amount: %s" %score_row_amount)
+	print("column amount:%s" % score_column_amount)
 	#same as above but we wanted to clear the overlapping tiles separately
 	await get_tree().create_timer(anim_time * 3).timeout
 	for tile_pos : Vector2i in bonus_tiles:
@@ -263,7 +299,21 @@ func clear_piece()->void:
 		await clear_animation.call(tile_pos, color_val, 0.05)
 
 	currently_clearing = false
-	print(add_bonus)
+	print("bonus :%s" % add_bonus)
+	match add_bonus:
+		0:
+			score_row_amount /= (GRID_BOTTOM_LIMIT.x - GRID_TOP_LIMIT.x + 1)
+			score_column_amount /= (GRID_BOTTOM_LIMIT.y - GRID_TOP_LIMIT.y + 1)
+			print("2-row amount: %s" %score_row_amount)
+			print("2-column amount:%s" % score_column_amount)
+			if score_row_amount > 1: add_score("+%s Rows Clear!", score_row_amount * score_m_row_or_column)
+			elif score_column_amount > 1: add_score("+%s Columns Clear!", score_column_amount  * score_m_row_or_column)
+			elif score_column_amount == 0 and score_row_amount == 0: pass 
+			else: add_score("+%s Line Clear", score_line_clear)
+		1:
+			add_score("+%s COMBO!!", score_row_and_column)
+		_:
+			add_score("+%s MULTI COMBO!", add_bonus * score_m_row_and_column)
 
 #checks if the given corrds in between the playground we decided
 func test_limits(pos_check: Vector2i)->bool:
@@ -273,7 +323,7 @@ func test_limits(pos_check: Vector2i)->bool:
 
 #sets a tile to the mouse position
 func set_tile_on_mouse_pos()->void:
-	print(tilemap.local_to_map(get_global_mouse_position()))
+	#print(tilemap.local_to_map(get_global_mouse_position()))
 	var mouse_pos = get_global_mouse_position()
 	var grid_mouse_pos = tilemap.local_to_map(mouse_pos)
 	if test_limits(grid_mouse_pos): return
@@ -284,7 +334,7 @@ func set_tile_on_mouse_pos()->void:
 func set_pattern_on_mouse_pos()->void:
 	var mouse_pos = get_global_mouse_position()
 	var grid_mouse_pos = tilemap.local_to_map(mouse_pos)
-	print(tilemap.get_cell_source_id(grid_mouse_pos))
+	#print(tilemap.get_cell_source_id(grid_mouse_pos))
 	if test_limits(grid_mouse_pos) or holding_pattern == null: return
 	var rand_color: COLORS = randi_range(0, COLORS.size() - 1) as COLORS
 	#var rand_pattern: PATTERNS = randi_range(0, PATTERNS.size() - 1) as PATTERNS
@@ -297,7 +347,7 @@ func set_visual_pattern_on_mouse_pos()->void:
 	if grid_mouse_pos == previous_mouse_pos: return
 	pattern_visual.clear()
 	previous_mouse_pos = grid_mouse_pos
-	print(pattern_visual.get_cell_source_id(grid_mouse_pos))
+	#print(pattern_visual.get_cell_source_id(grid_mouse_pos))
 	if test_limits(grid_mouse_pos): return
 	if holding_pattern == null: return
 	else: holding_sprite.show()
@@ -310,12 +360,22 @@ func set_visual_pattern_on_mouse_pos()->void:
 #endregion
 #-----------------------------------------------------------------------------------
 
+func add_score(score_text : String, n_score: int)->void:
+	var _n_label := Label.new()
+	_n_label.text = score_text % n_score
+	var _lmbd : Callable = func(tmp_lbl): await get_tree().create_timer(2.5).timeout; tmp_lbl.queue_free()
+	_n_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	_n_label.tree_entered.connect(_lmbd.bind(_n_label))
+	score_box.add_child(_n_label)
+	total_score += n_score 
+	score_label.text = "SCORE:\n%s" % total_score 
 
 #-----------------------------------------------------------------------------------
 #region ElementInteractions
 func place_pattern_button()->void:
 #	var test_patterns : Array[PATTERNS] = [PATTERNS.TINY_T, PATTERNS.TINY_T, PATTERNS.SQUARE]
 	var test_patterns: Array[PATTERNS]
+	test_patterns.append_array([PATTERNS.SQUARE, PATTERNS.SQUARE, PATTERNS.SQUARE, PATTERNS.SQUARE])
 	for i : int in PATTERNS.size():
 		test_patterns.append(i)
 
